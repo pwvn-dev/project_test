@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tabs import ConvertText2CSVTab, ConvertText2OtherTab
+from utils import resource_path
 
 BASE_DIR = os.path.abspath(".")
 
@@ -20,7 +21,7 @@ class ConvertApp:
         self.root.resizable(False, False)
         self.root.config(bg="#E4E2E2")
 
-        icon_path = os.path.join(BASE_DIR, "assets", "images", "icon_1755948263.png")
+        icon_path = resource_path("assets/icon_1755948263.png")
         if os.path.exists(icon_path):
             icon_img = Image.open(icon_path)
             icon_img = ImageTk.PhotoImage(icon_img)

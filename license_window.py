@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
 from datetime import datetime
+from utils import resource_path  # Bổ sung import này
 
 # Thư viện mã hóa AES
 from cryptography.hazmat.primitives import hashes
@@ -39,14 +40,28 @@ class LicenseWindow:
         self.root.geometry("420x220")
         self.root.resizable(False, False)
 
-        style = ttk.Style(root)
-        style.theme_use("clam")
+        # Đặt icon cho cửa sổ nhập license nếu muốn (ví dụ icon riêng)
+        icon_path = resource_path("assets/icon_1755948263.png")  # Hoặc thay bằng assets/license_icon.png
+        if os.path.exists(icon_path):
+            try:
+                from PIL import Image, ImageTk
+                icon_img = Image.open(icon_path)
+                icon_img = ImageTk.PhotoImage(icon_img)
+                self.root.iconphoto(False, icon_img)
+            except Exception:
+                pass  # Không có Pillow hoặc lỗi thì bỏ qua
 
         frame = ttk.Frame(root, padding=20)
         frame.pack(expand=True, fill=tk.BOTH)
 
         ttk.Label(frame, text="Chọn file license:").grid(row=0, column=0, sticky="w")
         self.license_path_var = tk.StringVar()
+
+        # Sử dụng license ở thư mục mặc định nếu có
+        default_license_path = resource_path("license/license.lic")
+        if os.path.exists(default_license_path):
+            self.license_path_var.set(default_license_path)
+
         license_entry = ttk.Entry(frame, textvariable=self.license_path_var, width=40)
         license_entry.grid(row=0, column=1)
         browse_btn = ttk.Button(frame, text="Chọn file", command=self.browse_license_file)
