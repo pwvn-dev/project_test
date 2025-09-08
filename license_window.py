@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
 from datetime import datetime
-from utils import resource_path  # Bổ sung import này
+from utils import resource_path
 
 # Thư viện mã hóa AES
 from cryptography.hazmat.primitives import hashes
@@ -40,24 +40,19 @@ class LicenseWindow:
         self.root.geometry("420x220")
         self.root.resizable(False, False)
 
-        # Đặt icon cho cửa sổ nhập license nếu muốn (ví dụ icon riêng)
-        icon_path = resource_path("assets/icon_1755948263.png")  # Hoặc thay bằng assets/license_icon.png
+        # Đặt icon, dùng .ico cho ổn định (có thể đổi thành .png nếu cần)
+        icon_path = resource_path("assets/icon_1755948263.ico")
         if os.path.exists(icon_path):
             try:
-                from PIL import Image, ImageTk
-                icon_img = Image.open(icon_path)
-                icon_img = ImageTk.PhotoImage(icon_img)
-                self.root.iconphoto(False, icon_img)
+                self.root.iconbitmap(default=icon_path)
             except Exception:
-                pass  # Không có Pillow hoặc lỗi thì bỏ qua
+                pass
 
         frame = ttk.Frame(root, padding=20)
         frame.pack(expand=True, fill=tk.BOTH)
 
         ttk.Label(frame, text="Chọn file license:").grid(row=0, column=0, sticky="w")
         self.license_path_var = tk.StringVar()
-
-        # Sử dụng license ở thư mục mặc định nếu có
         default_license_path = resource_path("license/license.lic")
         if os.path.exists(default_license_path):
             self.license_path_var.set(default_license_path)
@@ -119,7 +114,15 @@ class LicenseWindow:
 
         today = datetime.today().date()
         if today > expiry_date:
-            messagebox.showerror("Lỗi", "License đã hết hạn.")
+            messagebox.showerror("Lỗi", "License đã hết hạn, vui lòng đăng nhập lại.")
+            # Xóa trạng thái đăng nhập để buộc phải đăng nhập lại
+            login_state_file = "login_state.json"
+            if os.path.exists(login_state_file):
+                try:
+                    os.remove(login_state_file)
+                except Exception as e:
+                    print(f"Không xóa được file trạng thái đăng nhập: {e}")
+            self.root.destroy()
             return
 
         messagebox.showinfo("Thành công", f"License hợp lệ cho user: {user}")

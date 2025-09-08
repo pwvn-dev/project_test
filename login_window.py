@@ -1,9 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from license_window import LicenseWindow
-from app_gui import ConvertApp
-from utils import resource_path
-import os
 import json
 
 LOGIN_STATE_FILE = "login_state.json"
@@ -14,19 +10,12 @@ class LoginWindow:
         self.root.title("Đăng nhập")
         self.root.geometry("350x180")
         self.root.resizable(False, False)
-
-        # Đặt icon cho màn hình đăng nhập
-        icon_path = resource_path("assets/icon_1755948263.ico")
-        if os.path.exists(icon_path):
-            try:
-                self.root.iconbitmap(default=icon_path)
-            except Exception as e:
-                print("Không thể đặt icon đăng nhập:", e)
+        
+        # Đặt icon nếu cần (giống các file khác)
+        # ...
 
         style = ttk.Style(root)
         style.theme_use("clam")
-        style.configure("TLabel", font=(None, 12))
-        style.configure("TEntry", font=(None, 12))
 
         frame = ttk.Frame(root, padding=20)
         frame.pack(expand=True, fill=tk.BOTH)
@@ -48,51 +37,25 @@ class LoginWindow:
         user = self.user_entry.get()
         password = self.pass_entry.get()
 
-        # Ví dụ xác thực cứng
+        # Ví dụ xác thực đơn giản
         if user == "admin" and password == "1234":
-            # Lưu trạng thái đăng nhập
             with open(LOGIN_STATE_FILE, "w") as f:
                 json.dump({"is_logged_in": True}, f)
-
             self.root.destroy()
+
+            from license_window import LicenseWindow
+            import tkinter as tk
 
             def open_app_after_license(user):
                 main_root = tk.Tk()
+                from app_gui import ConvertApp
                 app = ConvertApp(main_root)
                 main_root.mainloop()
 
             license_root = tk.Tk()
             license_win = LicenseWindow(license_root, open_app_after_license)
             license_root.mainloop()
-
         else:
             messagebox.showerror("Lỗi đăng nhập", "User hoặc Password không đúng, vui lòng thử lại.")
             self.pass_entry.delete(0, tk.END)
             self.pass_entry.focus()
-
-def check_already_logged_in():
-    if os.path.exists(LOGIN_STATE_FILE):
-        try:
-            with open(LOGIN_STATE_FILE, "r") as f:
-                state = json.load(f)
-            return state.get("is_logged_in", False)
-        except:
-            return False
-    return False
-
-if __name__ == "__main__":
-    if check_already_logged_in():
-        # Bỏ qua login, vào thẳng license
-        def open_app_after_license(user):
-            root = tk.Tk()
-            app = ConvertApp(root)
-            root.mainloop()
-
-        license_root = tk.Tk()
-        license_win = LicenseWindow(license_root, open_app_after_license)
-        license_root.mainloop()
-    else:
-        # Hiển thị màn hình đăng nhập
-        root = tk.Tk()
-        login = LoginWindow(root)
-        root.mainloop()
