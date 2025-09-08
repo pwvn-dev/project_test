@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-from tabs import ConvertText2CSVTab, ConvertText2OtherTab
+from tabs import Convert_AFP, Convert_PWI
 from utils import resource_path
 
 BASE_DIR = os.path.abspath(".")
@@ -34,8 +34,8 @@ class ConvertApp:
         tab_control = ttk.Notebook(self.root)
         tab_control.pack(expand=True, fill=tk.BOTH)
 
-        tab_csv = ConvertText2CSVTab(tab_control)
-        tab_other = ConvertText2OtherTab(tab_control)
+        tab_csv = Convert_AFP(tab_control)
+        tab_other = Convert_PWI(tab_control)
 
         tab_control.add(tab_csv.frame, text="Convert text2csv")
         tab_control.add(tab_other.frame, text="Convert text2other")

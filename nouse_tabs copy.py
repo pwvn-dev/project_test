@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from converter import TxtToCsvConverter
+from nouse_converter_txt2csv import TxtToCsvConverter
 import config_manager
 
 def open_path(entry_widget):
@@ -97,8 +97,8 @@ class BaseConvertTab:
     def load_config(self):
         config_manager.load_config_ui(self.entries, self.frame, self.log, self.__class__.__name__)
 
-class ConvertText2CSVTab(BaseConvertTab):
+class Convert_AFP(BaseConvertTab):
     pass
 
-class ConvertText2OtherTab(BaseConvertTab):
+class Convert_PWI(BaseConvertTab):
     pass

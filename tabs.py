@@ -66,7 +66,7 @@ class ConvertJob:
             self.status = "Stopped"
             self.log += f"{self.brand} conversion stopped by user.\n"
 
-class ConvertText2CSVTab:
+class Convert_AFP:
     def __init__(self, parent):
         self.parent = parent
         self.frame = ttk.Frame(parent)
@@ -133,64 +133,4 @@ class ConvertText2CSVTab:
     def on_job_selected(self, event):
         selected = self.tree.selection()
         if selected:
-            self.selected_brand = selected[0]
-            self.update_log()
-
-    def update_log(self):
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete(1.0, tk.END)
-        if self.selected_brand and self.selected_brand in self.jobs:
-            self.log_text.insert(tk.END, self.jobs[self.selected_brand].log)
-        self.log_text.config(state=tk.DISABLED)
-
-    def start(self):
-        root_data = self.entries[0].get()
-        afp_to_dl = self.entries[1].get()
-        log_dir = self.entries[2].get()
-        if not all([root_data, afp_to_dl, log_dir]):
-            messagebox.showwarning("Thiếu dữ liệu", "Hãy điền đầy đủ các thư mục trước khi bắt đầu.")
-            return
-        selected_brands = [b for b, v in self.brand_vars.items() if v.get()]
-        if not selected_brands:
-            messagebox.showwarning("Chưa chọn", "Vui lòng chọn ít nhất một thương hiệu để chuyển đổi.")
-            return
-        for brand in selected_brands:
-            if brand not in self.jobs or self.jobs[brand].status == "Stopped":
-                job = ConvertJob(brand, root_data, afp_to_dl, log_dir)
-                self.jobs[brand] = job
-                self.tree.insert("", tk.END, iid=brand, values=(job.status, f"{job.progress}%"))
-            self.jobs[brand].start(self.update_tree_ui)
-
-    def pause(self):
-        if not self.selected_brand:
-            return
-        job = self.jobs.get(self.selected_brand)
-        if job:
-            job.pause()
-            self.update_tree_ui(job)
-
-    def stop(self):
-        if not self.selected_brand:
-            return
-        job = self.jobs.get(self.selected_brand)
-        if job:
-            job.stop()
-            self.update_tree_ui(job)
-
-    def update_tree_ui(self, job):
-        self.tree.set(job.brand, "status", job.status)
-        self.tree.set(job.brand, "progress", f"{job.progress}%")
-        if self.selected_brand == job.brand:
-            self.update_log()
-
-    def save_config(self):
-        save_config_ui(self.entries, self.frame, self.log, "Convert text2csv")
-
-    def load_config(self):
-        load_config_ui(self.entries, self.frame, self.log, "Convert text2csv")
-
-# Other tab can stay simple as placeholder or implemented similarly
-class ConvertText2OtherTab:
-    def __init__(self, parent):
-        self.frame = ttk.Frame(parent)
-        ttk.Label(self.frame, text="Tab Convert text2other chưa được xây dựng").pack(fill=tk.BOTH, expand=True)
+            self.selected_brand = selected
